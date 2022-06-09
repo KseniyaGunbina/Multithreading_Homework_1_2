@@ -1,23 +1,25 @@
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.*;
+
 public class Main {
-    public static void main(String[] args) throws InterruptedException {
-        ThreadGroup myThreadGroup = new ThreadGroup("My first group");
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
 
         System.out.println("Запускаю потоки...");
 
-        final Thread myThread1 = new MyThread(myThreadGroup, "Поток 1");
-        final Thread myThread2 = new MyThread(myThreadGroup, "Поток 2");
-        final Thread myThread3 = new MyThread(myThreadGroup, "Поток 3");
-        final Thread myThread4 = new MyThread(myThreadGroup, "Поток 4");
+        List<Callable<Integer>> callList = new ArrayList<>();
 
-        myThread1.start();
-        myThread2.start();
-        myThread3.start();
-        myThread4.start();
+        callList.add(new MyCallable("Поток 1", 10, 13));
+        callList.add(new MyCallable("Поток 2", 7, 20));
+        callList.add(new MyCallable("Поток 3",1,30));
+        callList.add(new MyCallable("Поток 4", 27, 37));
 
-        Thread.sleep(15000);
+        final ExecutorService threadPool = Executors.newFixedThreadPool(4);
+        threadPool.invokeAll(callList);
+        threadPool.invokeAny(callList);
 
-
-        myThreadGroup.interrupt();
+        //Thread.sleep(15000);
 
 
 
